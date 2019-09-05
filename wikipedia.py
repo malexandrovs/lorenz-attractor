@@ -18,8 +18,10 @@ states = odeint(f, state0, t)
 print(states)
 
 fig = plt.figure()
-ax = fig.gca(projection='3d')
-ax.plot(states[:,0], states[:,1], states[:,2])
+#ax = fig.gca(projection='3d')
+#ax.plot(states[:,0], states[:,1], states[:,2])
+ax = plt.axes()
+ax.plot(states[:,0], states[:,2])
 plt.show()
 
 
