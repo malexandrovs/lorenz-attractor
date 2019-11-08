@@ -5,51 +5,51 @@ from scipy.integrate import odeint
 import mpl_toolkits.mplot3d.axes3d as p3
 
 
-rho = 28.0
+########### Here come the Maths part #############
+
+# set parameters
+rho = 27.0
 sigma = 10.0
 beta = 8.0/3.0
 
+# define set of ODEs
 def f(state, t):
   x, y, z = state
   return sigma * (y - x), x * (rho - z) - y, x * y - beta * z
 
+# set initial conditions
 t0 = [1.0, 1.0, 1.0]
-t = np.arange(0.0, 100.0, 0.01)
+t = np.arange(0.0, 100.0, 0.001)
 
-coords = odeint(f, t0, t)
-print(np.shape(coords))
+# compute 10000 values
+coords = odeint(f, t0, t).T
 
 
 
 ########### Here come the Graphics ############
+
+#create figure
 fig = plt.figure()
 ax = p3.Axes3D(fig)
-#ax = fig.gca(projection='3d')
 plot, = ax.plot([], [] ,[])
 
 
-ax.set_xlim3d([0.0, 60.0])
-ax.set_ylim3d([0.0, 60.0])
-ax.set_zlim3d([0.0, 60.0])
-
-
 def init():
-    plot.set_data([], [], [])
+    plot.set_data([], [])
     return plot,
 
+# define which data is used for the animation
 def animate(i):
-    plot.set_data(coords[0:2,:i])
-    plot.set_3d_properties(coords[2, :i])
+    plot.set_data(coords[0:2,:40*i])
+    plot.set_3d_properties(coords[2, :40*i])
     return plot,
 
-anim = animation.FuncAnimation(fig, animate, init_func=init,
-        frames=np.shape(coords)[0],
-        interval=5, blit=True)
-'''
-fig = plt.figure()
-#ax = fig.gca(projection='3d')
-#ax.plot(coords[:,0], coords[:,1], coords[:,2])
-ax = plt.axes()
-ax.plot(states[:,0],states[:,2])
-'''
+# start the animation
+anim = animation.FuncAnimation(fig, animate, 
+        frames=np.shape(coords)[1],
+        interval=1, blit=False)
+
+ax.set_ylim(-30,30)
+ax.set_xlim(-20,20)
+ax.set_zlim(-15,50)
 plt.show()
